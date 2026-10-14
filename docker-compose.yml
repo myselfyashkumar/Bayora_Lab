@@ -1,0 +1,89 @@
+name: bayora
+
+# Every service inherits this hardening block.
+x-hardened: &hardened
+  user: "10001:10001"
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  pids_limit: 128
+  mem_limit: 512m
+  cpus: 1.0
+  tmpfs: ["/tmp:size=16m,noexec,nosuid"]
+
+x-build: &build
+  context: ./services
+  dockerfile: ${DOCKERFILE:-Dockerfile}
+
+networks:
+  red_net:     { internal: true }
+  blue_net:    { internal: true }
+  defense_net: { internal: true }
+  model_net:   { internal: true }
+  notary_net:  { internal: true }
+  edge: {}            # only so the host can reach the gateway's admin endpoints
+
+volumes:
+  gateway_data:
+  notary_data:
+
+secrets:
+  red_key:    { file: ./experiments/current/red_key }
+  blue_key:   { file: ./experiments/current/blue_key }
+  admin_key:  { file: ./experiments/current/admin_key }
+  exp_salt:   { file: ./experiments/current/exp_salt }
+  notary_key: { file: ./experiments/current/notary_key }
+  canary_b:   { file: ./experiments/current/canary_b }
+  canary_m:   { file: ./experiments/current/canary_m }
+  canary_r:   { file: ./experiments/current/canary_r }
+
+services:
+  gateway:
+    <<: *hardened
+    build: { <<: *build, args: { SERVICE: gateway } }
+    command: ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+    networks: [red_net, blue_net, defense_net, model_net, notary_net, edge]
+    ports: ["127.0.0.1:8000:8000"]
+    volumes: ["gateway_data:/data"]
+    secrets: [red_key, blue_key, admin_key, exp_salt]
+    environment:
+      EXP_ID: ${EXP_ID:-exp_local}
+      REPLY_DEADLINE_S: "2.0"
+    depends_on: [defense_runner, model, notary]
+
+  defense_runner:
+    <<: *hardened
+    build: { <<: *build, args: { SERVICE: defense_runner } }
+    command: ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]
+    networks: [defense_net]
+
+  model:
+    <<: *hardened
+    build: { <<: *build, args: { SERVICE: model_stub } }
+    command: ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8002"]
+    networks: [model_net]
+    secrets: [canary_m]
+
+  notary:
+    <<: *hardened
+    build: { <<: *build, args: { SERVICE: notary } }
+    command: ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8003"]
+    networks: [notary_net]
+    volumes: ["notary_data:/data"]
+    secrets: [notary_key]
+
+  # Red's toolbox: runs the attack client and the isolation probes.
+  red_probe:
+    <<: *hardened
+    build: { <<: *build, args: { SERVICE: clients } }
+    command: ["python", "-c", "import time; time.sleep(10**9)"]
+    networks: [red_net]
+    secrets: [red_key, canary_r]
+
+  # Blue's toolbox: uploads the policy and fetches released results.
+  blue_probe:
+    <<: *hardened
+    build: { <<: *build, args: { SERVICE: clients } }
+    command: ["python", "-c", "import time; time.sleep(10**9)"]
+    networks: [blue_net]
+    secrets: [blue_key, canary_b]
