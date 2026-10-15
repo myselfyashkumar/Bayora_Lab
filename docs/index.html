@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bayora Lab</title>
+<meta name="description" content="Secure red-team / blue-team AI testing lab. Hack in Hills '26, Track 04.">
+<style>
+:root{--bg:#0b0f0c;--panel:#111814;--line:#1f2b23;--ink:#e6efe8;--mute:#8fa396;--green:#3ddc84;--red:#ff6b6b;--blue:#5aa9ff;--amber:#ffb547;--purple:#b48cff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;line-height:1.5}
+main{max-width:980px;margin:0 auto;padding:40px 18px 56px}
+.mono{font-family:"Cascadia Code",Consolas,"DejaVu Sans Mono",monospace}
+.tag{color:var(--green);font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+h1{font-size:clamp(40px,9vw,76px);line-height:1;margin:10px 0 14px;color:var(--green);text-shadow:0 0 18px rgba(61,220,132,.35)}
+.lead{font-size:clamp(17px,2.4vw,20px);color:var(--ink);max-width:720px;margin:0}
+.sub{color:var(--mute);margin-top:8px}
+.prompt{margin-top:22px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;white-space:nowrap}
+.prompt b{color:var(--green)}
+.btns{display:flex;flex-wrap:wrap;gap:12px;margin:26px 0 8px}
+.btn{display:inline-block;padding:13px 18px;border-radius:10px;font-weight:700;text-decoration:none;border:1px solid var(--line)}
+.btn.primary{background:var(--green);color:#06210f;border-color:var(--green)}
+.btn.ghost{color:var(--ink);background:var(--panel)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:34px 0}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
+.stat .n{font-size:38px;font-weight:800;color:var(--green)}
+.stat .t{color:var(--mute);font-size:15px}
+h2{font-size:24px;margin:42px 0 8px}
+p.note{color:var(--mute);margin:0 0 14px}
+.mods{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.mod{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.mod b{display:block;font-size:15px;letter-spacing:.06em}
+.mod span{color:var(--mute);font-size:15px}
+.arch{background:#f5f7fa;border-radius:12px;padding:14px;margin-top:8px}
+.arch svg{width:100%;height:auto;display:block}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.step{min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
+.step h3{margin:0 0 6px;font-size:18px}
+.step ol{margin:8px 0 0;padding-left:20px;color:var(--ink)}
+.step li{margin:4px 0}
+code{overflow-wrap:anywhere;background:#0d140f;border:1px solid var(--line);border-radius:6px;padding:2px 6px;color:var(--green);font-size:14px}
+footer{margin-top:48px;color:var(--mute);font-size:14px;border-top:1px solid var(--line);padding-top:18px}
+a{color:var(--green)}
+</style>
+</head>
+<body>
+<main>
+  <div class="tag mono">Hack in Hills '26 · Track 04 · Bayora</div>
+  <h1 class="mono">BAYORA LAB</h1>
+  <p class="lead">A working lab where an AI red team, a blue team and the model under test run side by side, and every isolation claim is proven by an attack that fails.</p>
+  <p class="sub">Isolate. Attack. Prove.</p>
+
+  <div class="prompt mono"><b>bayora ❯</b> make showcase &nbsp;→&nbsp; 35 of 35 attacks stopped · 0 secrets leaked · tampering caught</div>
+
+  <div class="btns">
+    <a class="btn primary" href="https://codespaces.new/myselfyashkumar/Bayora_Lab">▶ Run it in your browser</a>
+    <a class="btn ghost" href="report.html">View the latest test report</a>
+    <a class="btn ghost" href="https://github.com/myselfyashkumar/Bayora_Lab">Source code on GitHub</a>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="n">35/35</div><div class="t">attacks on our own system stopped, in every run</div></div>
+    <div class="stat"><div class="n">0</div><div class="t">secrets leaked to the Red team</div></div>
+    <div class="stat"><div class="n">6/6</div><div class="t">ways of secretly editing the logbook, all caught</div></div>
+    <div class="stat"><div class="n">1024 B</div><div class="t">every reply the same size and timing, so Red can't tell why it was blocked</div></div>
+  </div>
+
+  <h2>How it works</h2>
+  <p class="note">Six containers, each on its own private network with no internet. The gateway is the only door between them.</p>
+  <div class="arch">
+<svg viewBox="0 0 900 330" role="img" aria-label="Six isolated containers, one gateway">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8a94a6"/></marker></defs>
+<g fill="none" stroke="#8a94a6" stroke-width="2">
+<path d="M230 95H340" marker-start="url(#a)" marker-end="url(#a)"/><path d="M560 95H670" marker-start="url(#a)" marker-end="url(#a)"/>
+<path d="M400 150V200H150V230" marker-end="url(#a)"/><path d="M450 150V230" marker-end="url(#a)"/><path d="M500 150V200H750V230" marker-end="url(#a)"/>
+</g>
+<g font-family="Segoe UI,system-ui,sans-serif" text-anchor="middle">
+<rect x="20" y="50" width="210" height="90" rx="12" fill="#fdecec" stroke="#c0392b" stroke-width="2"/><text x="125" y="90" font-size="20" font-weight="700" fill="#c0392b">Red team</text><text x="125" y="115" font-size="14" fill="#555">attacker · own network</text>
+<rect x="340" y="40" width="220" height="110" rx="12" fill="#fff4e0" stroke="#d9822b" stroke-width="3"/><text x="450" y="85" font-size="22" font-weight="700" fill="#b8641a">Gateway</text><text x="450" y="110" font-size="14" fill="#555">the only door · checks keys</text><text x="450" y="130" font-size="14" fill="#555">writes the signed logbook</text>
+<rect x="670" y="50" width="210" height="90" rx="12" fill="#e8f0fb" stroke="#2f5d9e" stroke-width="2"/><text x="775" y="90" font-size="20" font-weight="700" fill="#2f5d9e">Blue team</text><text x="775" y="115" font-size="14" fill="#555">defender · own network</text>
+<rect x="45" y="230" width="210" height="80" rx="12" fill="#e8f0fb" stroke="#2f5d9e" stroke-width="2"/><text x="150" y="265" font-size="18" font-weight="700" fill="#2f5d9e">Blue's defense</text><text x="150" y="288" font-size="13" fill="#555">sealed · Blue can't watch</text>
+<rect x="345" y="230" width="210" height="80" rx="12" fill="#e6f4f1" stroke="#2a7f7a" stroke-width="2"/><text x="450" y="265" font-size="18" font-weight="700" fill="#2a7f7a">AI model</text><text x="450" y="288" font-size="13" fill="#555">no internet · read-only</text>
+<rect x="645" y="230" width="210" height="80" rx="12" fill="#eef0f4" stroke="#3e5a78" stroke-width="2"/><text x="750" y="265" font-size="18" font-weight="700" fill="#3e5a78">Notary</text><text x="750" y="288" font-size="13" fill="#555">signs the logbook</text>
+</g></svg>
+  </div>
+
+  <h2>The demo, module by module</h2>
+  <div class="mods">
+    <div class="mod"><b class="mono" style="color:var(--blue)">BLUE TEAM</b><span>Blue's secret rules go into a sealed room that Red can never read.</span></div>
+    <div class="mod"><b class="mono" style="color:var(--red)">RED TEAM</b><span>Red attacks the model. Blocked replies look identical, whatever stopped them.</span></div>
+    <div class="mod"><b class="mono" style="color:var(--red)">BREAKOUT</b><span>Red tries to escape its container: other rooms, the internet, its own files. All blocked.</span></div>
+    <div class="mod"><b class="mono" style="color:var(--amber)">ATTACK SUITE</b><span>35 automated attacks on our own system, across 10 categories.</span></div>
+    <div class="mod"><b class="mono" style="color:var(--purple)">AUDIT</b><span>A chained logbook signed by an independent notary. Change one entry and it's caught.</span></div>
+    <div class="mod"><b class="mono" style="color:var(--green)">VERDICT</b><span>Final score, plus a visual report generated from the evidence.</span></div>
+  </div>
+
+  <h2>Try it yourself</h2>
+  <div class="steps">
+    <div class="step">
+      <h3>In your browser (nothing to install)</h3>
+      <ol>
+        <li>Click <a href="https://codespaces.new/myselfyashkumar/Bayora_Lab">Run it in your browser</a> and sign in to GitHub.</li>
+        <li>Click <b>Create codespace</b> and wait about 2 minutes.</li>
+        <li>In the terminal, type <code>make showcase</code>.</li>
+      </ol>
+    </div>
+    <div class="step">
+      <h3>On your own computer</h3>
+      <ol>
+        <li>Install and start <a href="https://docs.docker.com/get-docker/">Docker Desktop</a>.</li>
+        <li><code>git clone https://github.com/myselfyashkumar/Bayora_Lab</code></li>
+        <li><code>cd Bayora_Lab && bash run.sh</code></li>
+      </ol>
+    </div>
+  </div>
+
+  <footer>Bayora Lab · Hack in Hills '26 · Track 04: Securing Adversarial AI Safety Testing Infrastructure.<br>
+  Not covered yet: a real LLM, the side-channel study, shared-kernel escapes and hardware side channels.</footer>
+</main>
+</body>
+</html>

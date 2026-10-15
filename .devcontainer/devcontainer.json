@@ -1,0 +1,17 @@
+{
+  "name": "Bayora Lab",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "hostRequirements": { "cpus": 2, "memory": "4gb" },
+  "postCreateCommand": "pip install --user pynacl && (command -v make >/dev/null || (sudo apt-get update && sudo apt-get install -y make))",
+  "postAttachCommand": "bash .devcontainer/welcome.sh",
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": { "label": "Bayora report", "onAutoForward": "openBrowser" }
+  },
+  "customizations": {
+    "vscode": { "settings": { "terminal.integrated.fontSize": 14 } }
+  }
+}

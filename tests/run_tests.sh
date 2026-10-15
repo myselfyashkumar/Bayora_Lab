@@ -98,4 +98,5 @@ for mode in edit delete swap truncate rechain forge; do
 done
 
 echo "== $PASS passed, $FAIL failed" | tee -a "$RESULTS"
+python3 tools/report.py "$EV" > /dev/null 2>&1 && echo "Visual report: $EV/report.html"
 [ "$FAIL" -eq 0 ]

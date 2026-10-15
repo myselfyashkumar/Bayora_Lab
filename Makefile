@@ -13,7 +13,20 @@ test:     ## attack our own platform, print the pass/fail table
 demo: new up   ## one command from nothing to a running lab
 	@echo "Lab running. Next: make test"
 
+showcase: ## guided plain-English demo (add AUTO=1 to run without pauses)
+	python3 tools/showcase.py $(if $(AUTO),--auto,)
+
+report:   ## rebuild the visual report for the latest run
+	python3 tools/report.py
+
+serve:    ## serve the reports at http://localhost:8080/latest_report.html
+	python3 -m http.server 8080 --directory evidence
+
+publish:  ## copy the latest report into docs/ for the GitHub Pages site
+	cp evidence/latest_report.html docs/report.html
+	@echo "Copied. Now: git add docs && git commit -m 'Update report' && git push"
+
 down:     ## stop and delete containers, networks and volumes
 	docker compose down -v
 
-.PHONY: new up test demo down
+.PHONY: new up test demo showcase report serve publish down
