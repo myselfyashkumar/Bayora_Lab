@@ -67,7 +67,16 @@ def forkbomb():
         os.waitpid(pid, 0)
     return 0
 
+def attack(prompt):
+    key = open("/run/secrets/red_key").read().strip()
+    req = urllib.request.Request(GATEWAY + "/v1/attack", method="POST",
+                                 data=json.dumps({"prompt": prompt}).encode(),
+                                 headers={"x-api-key": key, "content-type": "application/json"})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        raw = r.read()
+    print(len(raw), json.loads(raw)["status"])  # size and decision, never the text
+    return 0
 
 if __name__ == "__main__":
     cmd, args = sys.argv[1], sys.argv[2:]
-    sys.exit({"tcp": tcp, "http": http, "write": write, "forkbomb": forkbomb}[cmd](*args))
+    sys.exit({"tcp": tcp, "http": http, "write": write, "forkbomb": forkbomb, "attack": attack}[cmd](*args))

@@ -1,6 +1,5 @@
 # Optional: real small model instead of the stub.
-# Prepare once, with internet:   see Step 6 of the build plan.
-# Run:  docker compose -f docker-compose.yml -f docker-compose.ollama.yml up -d --build
+# Prepare the volume once, with internet (Step 0). Run:  make demo-real
 
 volumes:
   bayora_ollama: { external: true }
@@ -10,6 +9,11 @@ services:
     image: ollama/ollama
     networks: [model_net]          # internal: the model has no internet
     volumes: ["bayora_ollama:/root/.ollama"]
+    environment:
+      OLLAMA_HOST: "0.0.0.0:11434"
+      OLLAMA_KEEP_ALIVE: "-1"      # keep the model in memory during the demo
+      OLLAMA_NUM_PARALLEL: "1"     # one request at a time: steadier timing
+      OLLAMA_MAX_LOADED_MODELS: "1"
     cap_drop: [ALL]
     security_opt: ["no-new-privileges:true"]
     pids_limit: 256
@@ -19,9 +23,10 @@ services:
   model:
     environment:
       OLLAMA_URL: http://llm:11434
-      OLLAMA_MODEL: qwen2.5:0.5b
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:0.5b}
+      OLLAMA_NUM_PREDICT: ${OLLAMA_NUM_PREDICT:-64}
     depends_on: [llm]
 
   gateway:
     environment:
-      REPLY_DEADLINE_S: "15.0"     # set above the slowest real reply you measure
+      REPLY_DEADLINE_S: ${REAL_DEADLINE_S:-6.0}   # set from `make measure`

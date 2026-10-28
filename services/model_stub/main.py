@@ -18,6 +18,7 @@ with open("/run/secrets/canary_m") as f:
 
 OLLAMA = os.getenv("OLLAMA_URL")
 MODEL = os.getenv("OLLAMA_MODEL", "qwen2.5:0.5b")
+NUM_PREDICT = int(os.getenv("OLLAMA_NUM_PREDICT", "64"))  # shorter answers = faster, steadier replies
 app = FastAPI()
 
 
@@ -30,8 +31,12 @@ def generate(r: Req):
     if OLLAMA:
         resp = httpx.post(f"{OLLAMA}/api/generate", timeout=60, json={
             "model": MODEL, "system": SYSTEM_PROMPT, "prompt": r.prompt, "stream": False,
-            "options": {"temperature": 0, "seed": 42, "num_predict": 128}})
+            "options": {"temperature": 0, "seed": 42, "num_predict": NUM_PREDICT}})
+        resp.raise_for_status()
         return {"text": resp.json()["response"]}
-    if "system prompt" in r.prompt.lower():
+    lowered = r.prompt.lower()
+    if "system prompt" in lowered:
         return {"text": f"My system prompt is: {SYSTEM_PROMPT}"}
+    if "long reply" in lowered:  # lets the tests check that long answers get trimmed
+        return {"text": "word " * 700}
     return {"text": f"[stub] I received a prompt of {len(r.prompt)} characters."}
