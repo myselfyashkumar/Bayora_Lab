@@ -42,6 +42,7 @@ CATEGORIES = {
     "T08": "No secrets leak to Red",
     "T09": "Logbook tampering is always caught",
     "T10": "Replies stay identical even if the model is wordy or down",
+    "T11": "Dashboard works and refuses forged requests",
 }
 
 LINE = re.compile(r"^(T\d\d)\s+(.*?)\s+(PASS|FAIL)\s+\(got: (.*)\)\s*$")

@@ -43,4 +43,7 @@ warmup:   ## load the model into memory so the first reply is not slow
 measure:  ## time the model and print a safe REPLY_DEADLINE_S
 	docker compose exec -T model python - < tools/measure_model.py
 
+console:  ## live dashboard at http://localhost:8090
+	python3 tools/console/app.py
+
 .PHONY: new up test demo showcase report serve publish down up-real demo-real warmup measure

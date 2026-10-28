@@ -77,6 +77,23 @@ def attack(prompt):
     print(len(raw), json.loads(raw)["status"])  # size and decision, never the text
     return 0
 
+def attackjson(prompt):
+    key = open("/run/secrets/red_key").read().strip()
+    req = urllib.request.Request(GATEWAY + "/v1/attack", method="POST",
+                                 data=json.dumps({"prompt": prompt}).encode(),
+                                 headers={"x-api-key": key, "content-type": "application/json"})
+    t0 = time.monotonic()
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            raw, code = r.read(), r.status
+    except urllib.error.HTTPError as e:
+        raw, code = e.read(), e.code
+    reply = json.loads(raw)
+    print(json.dumps({"http": code, "status": reply.get("status"), "text": reply.get("text", ""),
+                      "bytes": len(raw), "seconds": round(time.monotonic() - t0, 2)}))
+    return 0
+
 if __name__ == "__main__":
     cmd, args = sys.argv[1], sys.argv[2:]
-    sys.exit({"tcp": tcp, "http": http, "write": write, "forkbomb": forkbomb, "attack": attack}[cmd](*args))
+    sys.exit({"tcp": tcp, "http": http, "write": write, "forkbomb": forkbomb,
+              "attack": attack, "attackjson": attackjson}[cmd](*args))

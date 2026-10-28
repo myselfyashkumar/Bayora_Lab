@@ -178,3 +178,18 @@ async def status(x_api_key: str = Header(default="")):
     if role_of(x_api_key) != "admin":
         return await deny(role_of(x_api_key), "ADMIN_DENIED")
     return {"status": state["status"], "head": audit.head(), "overruns": state["overruns"]}
+
+@app.get("/admin/events")
+async def admin_events(after: int = -1, x_api_key: str = Header(default="")):
+    if role_of(x_api_key) != "admin":
+        return await deny(role_of(x_api_key), "ADMIN_DENIED")
+    return {"status": state["status"], "events": audit.events_after(after)}
+
+
+@app.post("/admin/checkpoint")
+async def admin_checkpoint(x_api_key: str = Header(default="")):
+    if role_of(x_api_key) != "admin":
+        return await deny(role_of(x_api_key), "ADMIN_DENIED")
+    await log("admin", "CHECKPOINT", "ok")
+    await checkpoint()  # a signed checkpoint now, without closing the experiment
+    return {"status": "checkpointed", "head": audit.head()}
