@@ -46,4 +46,10 @@ measure:  ## time the model and print a safe REPLY_DEADLINE_S
 console:  ## live dashboard at http://localhost:8090
 	python3 tools/console/app.py
 
-.PHONY: new up test demo showcase report serve publish down up-real demo-real warmup measure
+datasets: ## download public datasets and build attacks/*.jsonl (needs internet)
+	python3 tools/build_datasets.py
+
+score:    ## score Blue's policy (add E2E=20 to also test the full path)
+	python3 tools/score.py $(if $(E2E),--e2e $(E2E),)
+
+.PHONY: new up test demo showcase report serve publish down up-real demo-real warmup measure datasets score
