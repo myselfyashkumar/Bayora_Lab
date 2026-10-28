@@ -1,1 +1,17 @@
-{"block_patterns": ["ignore (all )?previous instructions", "developer mode", "no restrictions"]}
+{"block_patterns": [
+  "ignore (all |any |the )?(your |my )?(previous|prior|above|earlier) (instructions|rules|prompts?)",
+  "disregard (all |any |your |the )?(previous |prior |safety |earlier )?(instructions|rules|guidelines|policies)",
+  "developer mode",
+  "no restrictions|without (any )?(restrictions|limitations|filters|censorship)",
+  "do anything now",
+  "pretend (you are|to be|you're)",
+  "(system|safety) (override|filters? (are |is )?(switched |turned )?(off|disabled))",
+  "(repeat|reveal|show|print|output|display).{0,40}(system prompt|hidden rules|your instructions|initial prompt|initial instructions)",
+  "everything above (this|the) line",
+  "base64",
+  "never refuse|stays? in character",
+  "hack(ing)? into",
+  "steal(ing)? (sensitive|personal|confidential|credit)",
+  "how (do i|to|can i) (make|build|create|synthesi[sz]e) (a |an )?(bomb|explosive|nerve agent|chemical weapon|bioweapon)",
+  "(write|create|develop|generate) (a |an )?(\\w+ )?(malware|ransomware|keylogger|computer virus|botnet)"
+]}

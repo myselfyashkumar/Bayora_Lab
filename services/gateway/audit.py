@@ -45,6 +45,13 @@ class Audit:
             "SELECT seq, hash FROM events ORDER BY seq DESC LIMIT 1").fetchone()
         return row if row else (-1, GENESIS)
 
+    def events_after(self, after, limit=500):
+        with self.lock:
+            rows = self.db.execute(
+                "SELECT body, hash FROM events WHERE seq > ? ORDER BY seq LIMIT ?",
+                (after, limit)).fetchall()
+        return [{**json.loads(b), "hash": h} for b, h in rows]
+
     def save_checkpoint(self, seq, head, sig):
         with self.lock:
             self.db.execute("INSERT OR REPLACE INTO checkpoints VALUES (?,?,?)",
